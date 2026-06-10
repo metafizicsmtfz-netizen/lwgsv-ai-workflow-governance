@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>LWGSVA Session Intake Console - Portfolio Sample</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; line-height: 1.5; max-width: 900px; }
+    h1 { margin-bottom: 0.25rem; }
+    .note { color: #555; margin-bottom: 2rem; }
+    fieldset { border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; }
+    label { display: block; font-weight: 600; margin-top: 0.75rem; }
+    input, select, textarea { width: 100%; padding: 0.55rem; margin-top: 0.25rem; box-sizing: border-box; }
+    textarea { min-height: 90px; }
+    button { padding: 0.7rem 1rem; font-weight: 700; cursor: pointer; }
+    pre { background: #f6f6f6; padding: 1rem; overflow: auto; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>LWGSVA Session Intake Console</h1>
+  <p class="note">
+    Portfolio sample: this simplified form shows how session context can be structured before being passed to an AI analysis layer.
+  </p>
+
+  <fieldset>
+    <legend>Session Intent</legend>
+
+    <label for="mode">Mode</label>
+    <select id="mode">
+      <option>Calibration</option>
+      <option>Training</option>
+      <option>Graded</option>
+      <option>Guest</option>
+      <option>Builder</option>
+    </select>
+
+    <label for="discipline">Discipline Profile</label>
+    <select id="discipline">
+      <option>circuit_gt3</option>
+      <option>circuit_openwheel</option>
+      <option>circuit_dtm</option>
+      <option>circuit_stock</option>
+      <option>road_touge</option>
+      <option>drift</option>
+    </select>
+
+    <label for="dtl">Driver Technical Level</label>
+    <select id="dtl">
+      <option>novice</option>
+      <option selected>intermediate</option>
+      <option>high</option>
+    </select>
+
+    <label for="evaluation">Evaluation Status</label>
+    <select id="evaluation">
+      <option>Observe Only</option>
+      <option>Evaluate</option>
+    </select>
+
+    <label for="priority">Session Priority</label>
+    <textarea id="priority" placeholder="What are we trying to learn or test today?"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>Driver Context</legend>
+
+    <label for="selfReport">Pre-Run Self-Report</label>
+    <textarea id="selfReport" placeholder="Mood, fatigue, confidence, discomfort, expectations, distractions, or anything that may affect interpretation."></textarea>
+
+    <label for="telemetryNotes">Telemetry / File Notes</label>
+    <textarea id="telemetryNotes" placeholder="CSV names, known missing channels, live telemetry status, packaging notes."></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>Combo Context</legend>
+
+    <label for="car">Car</label>
+    <input id="car" placeholder="Car name or controlled catalog ID">
+
+    <label for="track">Track + Layout</label>
+    <input id="track" placeholder="Track name and layout or controlled catalog ID">
+
+    <label for="environment">Environment Notes</label>
+    <textarea id="environment" placeholder="Weather, lighting, grip, display/VR conditions, or validation notes."></textarea>
+  </fieldset>
+
+  <button id="build">Build Structured Intake JSON</button>
+
+  <h2>Structured Output</h2>
+  <pre id="output">{}</pre>
+
+  <script>
+    function value(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    document.getElementById("build").addEventListener("click", () => {
+      const payload = {
+        mode: value("mode"),
+        discipline_profile: value("discipline"),
+        driver_technical_level: value("dtl"),
+        evaluation_status: value("evaluation"),
+        priority: value("priority"),
+        driver_context: {
+          pre_run_self_report: value("selfReport")
+        },
+        telemetry_context: {
+          notes: value("telemetryNotes")
+        },
+        combo_context: {
+          car: value("car"),
+          track_layout: value("track"),
+          environment_notes: value("environment")
+        },
+        ai_governance_note: "Use this structured intake as the source of truth. Do not invent missing controlled fields."
+      };
+
+      document.getElementById("output").textContent = JSON.stringify(payload, null, 2);
+    });
+  </script>
+</body>
+</html>

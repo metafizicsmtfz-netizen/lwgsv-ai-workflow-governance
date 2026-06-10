@@ -1,0 +1,88 @@
+{
+  "schema_name": "sample_lwgsv_governance_rules",
+  "version": "portfolio_sanitized_v1",
+  "description": "A simplified sample of validation and governance rules used to keep AI output constrained, auditable, and domain-correct.",
+  "principles": [
+    {
+      "name": "fail_closed",
+      "description": "If an output depends on controlled files, schemas, or catalogs and those controls cannot be loaded, do not freehand a polished answer."
+    },
+    {
+      "name": "closed_schema_output",
+      "description": "Structured blocks may only contain approved fields in the approved order. Extra fields are treated as failure, not creativity."
+    },
+    {
+      "name": "state_before_generation",
+      "description": "Read current session state, driver standing, and prior selections before generating a new assignment or scored result."
+    },
+    {
+      "name": "human_context_is_data",
+      "description": "Driver self-report is treated as legitimate input alongside telemetry instead of being ignored as subjective noise."
+    }
+  ],
+  "sample_environment_block_schema": {
+    "allowed_keys_in_order": [
+      "Season",
+      "Hemisphere lock",
+      "Local start time",
+      "Weather script and controller",
+      "Static weather",
+      "PP filter",
+      "Initial Grip (%)",
+      "Grip Transfer (%)",
+      "Grip Randomization (%)",
+      "Lap Gain",
+      "Ambient temp (F)",
+      "Track temp (F)",
+      "Wind speed (mph)",
+      "Wind direction (degrees)",
+      "Tire blankets",
+      "Damage"
+    ],
+    "forbidden_behavior": [
+      "Do not invent extra fields.",
+      "Do not rename fields.",
+      "Do not switch unit systems.",
+      "Do not print internal compatibility groups as user-facing fields."
+    ],
+    "failure_behavior": "Reject the generated block and regenerate through validator-controlled logic."
+  },
+  "sample_session_integrity_states": [
+    "COMPLETED_VALID",
+    "COMPLETED_REDUCED",
+    "ABORTED_BY_DRIVER",
+    "INVALID_SETUP",
+    "EXPLORATORY_INTERLUDE"
+  ],
+  "sample_ai_failure_modes_and_controls": [
+    {
+      "failure_mode": "AI invents a field that was not requested.",
+      "control": "Closed schema validation rejects outputs with extra keys."
+    },
+    {
+      "failure_mode": "AI forgets whether a session is scored or observation-only.",
+      "control": "Evaluation Status and Session Integrity are explicit fields in intake and output."
+    },
+    {
+      "failure_mode": "AI substitutes a car, track, or environment that was not in the project catalog.",
+      "control": "Selection must come from controlled atlas/catalog files."
+    },
+    {
+      "failure_mode": "AI produces a long technical dump instead of coaching.",
+      "control": "Output contract requires coaching narrative and hides audit details unless requested."
+    },
+    {
+      "failure_mode": "AI treats unreliable telemetry channels as authoritative.",
+      "control": "Telemetry trust exceptions mark which channels can and cannot be used for scoring."
+    }
+  ],
+  "example_validator_pseudocode": [
+    "load schema",
+    "extract generated output keys",
+    "compare keys to allowed_keys_in_order",
+    "if extra keys exist: reject",
+    "if required keys missing: reject",
+    "if units are invalid: reject",
+    "if valid: allow output"
+  ]
+}
