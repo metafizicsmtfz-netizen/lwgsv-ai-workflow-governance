@@ -125,7 +125,6 @@ Driver self-report is treated as real data. The system combines subjective conte
 ├── PROJECT_STRUCTURE.md
 ├── docs/
 │   ├── CASE_STUDY_output_governance.md
-│   └── GITHUB_UPLOAD_STEPS.md
 └── examples/
     ├── sample_intake_console.html
     └── sample_validation_rules.json
